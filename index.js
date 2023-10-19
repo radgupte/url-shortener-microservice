@@ -16,16 +16,8 @@ mongoose.connect(uri, {
   serverSelectionTimeoutMS: 5000,
 });
 
-const connection = mongoose.connection;
-connection.on('error', console.error.bind(console, 'Connection error: '));
-connection.once('open', () => {
-  console.log('Successfully established connection to MongoDB database');
-});
-
 app.use(cors());
-
 app.use('/public', express.static(`${process.cwd()}/public`));
-
 app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
@@ -35,6 +27,7 @@ app.use(
     extended: false,
   })
 );
+
 app.use(cors());
 app.use(express.json());
 app.use('/public', express.static(process.cwd() + '/public'));
