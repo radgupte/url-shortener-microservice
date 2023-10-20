@@ -16,6 +16,7 @@ app.get('/', function (req, res) {
 
 app.use(express.json());
 
+// Route for creating a short URL
 const createNewUrl = require('./myApp.js').createNewUrl;
 app.post('/api/shorturl', async (req, res) => {
   const url = req.body.url;
@@ -26,6 +27,23 @@ app.post('/api/shorturl', async (req, res) => {
     console.log(newUrl);
     res.send(newUrl);
   });
+});
+
+// Route for redirecting to the original URL
+const redirectToOriginal = require('./myApp.js').redirectToOriginal;
+app.get('/api/shorturl/:short_url?', async (req, res) => {
+  const shorturl = req.params.short_url;
+  const search = redirectToOriginal(shorturl);
+  if (search.body === Error) {
+    search.then(function (search) {
+      console.log(search);
+      res.send(search);
+    });
+  } else {
+    search.then(function (search) {
+      res.redirect(search);
+    });
+  }
 });
 
 app.listen(port, function () {
